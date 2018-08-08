@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 export interface IJoystickProps {
     size?: number;
@@ -98,6 +99,7 @@ class Joystick extends React.Component<IJoystickProps, IJoystickState> {
     }
 
     private _mouseDown(e: any) {
+    console.log("mouse down");
         this._parentRect = this._baseRef.current.getBoundingClientRect();
 
         this.setState({
@@ -193,51 +195,45 @@ class Joystick extends React.Component<IJoystickProps, IJoystickState> {
         const baseColor: string = this.props.baseColor !== undefined ? this.props.baseColor : "#000033";
 
         const baseSizeString: string = `${this._baseSize}px`;
-        return {
-            height: baseSizeString,
-            width: baseSizeString,
-            background: baseColor,
-            borderRadius: this._baseSize,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        };
+        return (styled as any).div`
+            height: ${baseSizeString};
+            width: ${baseSizeString};
+            background: ${baseColor};
+            border-radius: ${this._baseSize}px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        `;
 
     }
     private _getStickStyle(): any {
         const stickColor: string = this.props.stickColor !== undefined ? this.props.stickColor : "#3D59AB";
         const stickSize: string = `${this._baseSize / 1.5}px`;
-
-        let stickStyle= {
-            background: stickColor,
-                cursor: "move",
-            height: stickSize,
-            width: stickSize,
-            borderRadius: this._baseSize,
-            flexShrink: 0
-        };
-
-        if (this.state.dragging && this.state.coordinates !== undefined) {
-            stickStyle = Object.assign({}, stickStyle, {
-                position: 'absolute',
-                transform: `translate3d(${this.state.coordinates.relativeX}px, ${this.state.coordinates.relativeY}px, 0)`
-            });
-        }
-        return stickStyle;
+        return (styled as any).div`
+            background: ${stickColor};
+            cursor: move;
+            height: ${stickSize};
+            width: ${stickSize};
+            border-radius: ${this._baseSize}px;
+            flex-shrink: 0;
+            ${this.state.dragging && this.state.coordinates ? 
+                "position:absolute;" + 
+                "transform:translate3d(" + this.state.coordinates.relativeX + "px, " + this.state.coordinates.relativeY + "px, 0);"
+                : ""
+            }
+        `;
     }
     render() {
         this._baseSize = this.props.size || 100;
-        const baseStyle = this._getBaseStyle();
-        const stickStyle = this._getStickStyle();
+        const Base = this._getBaseStyle();
+        const Stick = this._getStickStyle();
 
         return (
-            <div onMouseDown={this._mouseDown.bind(this)}
+            <Base onMouseDown={this._mouseDown.bind(this)}
                  onTouchStart={this._mouseDown.bind(this)}
-                 ref={this._baseRef}
-                 style={baseStyle}>
-                <div ref={this._stickRef}
-                     style={stickStyle}></div>
-            </div>
+                 ref={this._baseRef}>
+                <Stick ref={this._stickRef}></Stick>
+            </Base>
         )
     }
 }

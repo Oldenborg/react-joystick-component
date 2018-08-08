@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 
 import { Joystick } from "./Joystick";
 
-const joystickStories = storiesOf('Joystick Examples', module);
+const joystickStories = storiesOf('Joystick Examples.', module);
 
 
 joystickStories.add("Default joystick", ()=> <Joystick start={action("Started")} move={action("Moved")} stop={action("Stopped")} />);
